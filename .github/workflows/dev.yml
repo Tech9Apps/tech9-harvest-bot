@@ -35,6 +35,8 @@ jobs:
 
       - name: Backend lambda Deployment
         run: |
+          yarn install
           cd deploy
+          yarn install
           npx aws-cdk synth
           npx aws-cdk deploy --all --require-approval never
