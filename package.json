@@ -1,17 +1,31 @@
 {
-  "name": "tech9-harvest-bot",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/Tech9Apps/tech9-harvest-bot",
-  "author": "Durgaprasad-Budhwani <durgaprasad.budhwani@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "@slack/web-api": "^6.7.2",
-    "axios": "^0.27.2",
-    "date-fns": "^2.28.0",
-    "harvest-v2": "^3.0.0"
+  "name": "deploy",
+  "version": "0.1.0",
+  "bin": {
+    "deploy": "bin/deploy.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
   },
   "devDependencies": {
-    "@types/node": "^18.0.0"
+    "@types/jest": "^28.1.1",
+    "@types/node": "^18.0.0",
+    "@types/prettier": "2.6.0",
+    "aws-cdk": "2.28.0",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.8.1",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@slack/web-api": "^6.7.2",
+    "aws-cdk-lib": "2.28.0",
+    "constructs": "^10.0.0",
+    "date-fns": "^2.28.0",
+    "harvest-v2": "^3.0.0",
+    "source-map-support": "^0.5.21"
   }
 }

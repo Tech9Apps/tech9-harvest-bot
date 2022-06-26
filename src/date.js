@@ -18,7 +18,6 @@ const getMonthsInfo = (date) => {
     return {startOfMonth: startOfMonth(date), endOfMonth: endOfMonth(date)};
 }
 
-
 const getReportWeekInfo = (date) => {
     if (isSameDay(date, lastDayOfWeek(date))) {
         return getWeeksInfo(date);

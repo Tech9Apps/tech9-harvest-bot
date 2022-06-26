@@ -5,6 +5,7 @@ import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from "path";
 import {Rule, Schedule} from "aws-cdk-lib/aws-events";
 import {LambdaFunction} from "aws-cdk-lib/aws-events-targets";
+import {join} from "path";
 
 const {
   STAGE,
@@ -22,10 +23,11 @@ export class DeployStack extends Stack {
     const name = `${STAGE}-tech9-harvest-bot`;
     const botHandler = new NodejsFunction(this, name, {
       functionName: name,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_14_X,
       memorySize: 1024,
       timeout: Duration.minutes(15),
-      entry: path.join(__dirname, `../../src/index.js`),
+      entry: path.join(__dirname, `../src/index.js`),
+      depsLockFilePath: join(__dirname, "..", 'yarn.lock'),
       handler: 'handler',
       environment: {
         STAGE: STAGE!,
