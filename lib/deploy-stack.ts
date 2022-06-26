@@ -24,6 +24,9 @@ export class DeployStack extends Stack {
     const botHandler = new NodejsFunction(this, name, {
       functionName: name,
       runtime: Runtime.NODEJS_16_X,
+      bundling: {
+        nodeModules: ['axios', '@slack/web-api', 'date-fns', 'reflect-metadata', 'harvest-v2'],
+      },
       memorySize: 1024,
       timeout: Duration.minutes(15),
       entry: path.join(__dirname, `../src/index.ts`),

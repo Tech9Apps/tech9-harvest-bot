@@ -1,3 +1,5 @@
+import 'source-map-support/register';
+import 'reflect-metadata';
 import {WebClient} from "@slack/web-api";
 import {format} from "date-fns";
 import {getFormattedWeekInfo} from "./date";
@@ -12,7 +14,7 @@ const {
 // pilot users
 const emails = PILOT_USERS!.split(",");
 
-export const handler = async () => {
+exports.handler = async () => {
     // get the list of all slack users
     const web = new WebClient(SLACK_BOT_TOKEN);
     const slackResponse = await web.users.list();
