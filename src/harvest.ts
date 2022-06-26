@@ -1,14 +1,15 @@
-const Harvest = require("harvest-v2");
-const axios = require('axios');
+import axios, {AxiosInstance} from "axios";
+// @ts-ignore
+import Harvest from "harvest-v2";
 
 const {
     HARVEST_ACCOUNT_ID,
     HARVEST_PERSONAL_TOKEN,
 } = process.env;
 
-class HarvestApi {
-    _harvest;
-    _axiosInstance;
+export default class HarvestApi {
+    private _harvest: any;
+    private _axiosInstance: AxiosInstance;
 
     constructor() {
         this._harvest = new Harvest({
@@ -21,7 +22,7 @@ class HarvestApi {
             baseURL: "https://api.harvestapp.com/v2/",
             headers: {
                 "Authorization": `Bearer ${HARVEST_PERSONAL_TOKEN}`,
-                "Harvest-Account-Id": HARVEST_ACCOUNT_ID,
+                "Harvest-Account-Id": HARVEST_ACCOUNT_ID!,
                 "User-Agent": "Tech9 Harvest Bot",
             }
 
@@ -30,7 +31,7 @@ class HarvestApi {
 
     async getAllActiveUsers() {
         // get the list of time-entries for the week/month
-        let users = [];
+        let users: any = [];
         let page = 1;
         do {
             const res = await this._harvest.users.listBy({page, is_active: true });
@@ -47,9 +48,9 @@ class HarvestApi {
         return users;
     }
 
-    async getTimeEntries(start, end) {
+    async getTimeEntries(start: string, end: string) {
         // get the list of time-entries for the week/month
-        let results = [];
+        let results: any = [];
         let page = 1;
         do {
             const res = await this._axiosInstance.get("reports/time/team", { params: { from: start, to: end, page }});
@@ -67,5 +68,3 @@ class HarvestApi {
         return results;
     }
 }
-
-module.exports = { HarvestApi };

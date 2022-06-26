@@ -10,15 +10,15 @@ const {
 } = require('date-fns');
 const HarvestDateFormat = 'yyyyMMdd';
 
-const getWeeksInfo = (date) => {
+export const getWeeksInfo = (date: Date) => {
     return {startOfWeek: startOfWeek(date), endOfWeek: endOfWeek(date)};
 }
 
-const getMonthsInfo = (date) => {
+export const  getMonthsInfo = (date: Date) => {
     return {startOfMonth: startOfMonth(date), endOfMonth: endOfMonth(date)};
 }
 
-const getReportWeekInfo = (date) => {
+export const  getReportWeekInfo = (date: Date) => {
     if (isSameDay(date, lastDayOfWeek(date))) {
         return getWeeksInfo(date);
     }
@@ -26,7 +26,7 @@ const getReportWeekInfo = (date) => {
     return getWeeksInfo(newDate);
 }
 
-const getFormattedWeekInfo = (date) => {
+export const  getFormattedWeekInfo = (date: Date) => {
     const {startOfWeek, endOfWeek} = getReportWeekInfo(date);
 
     return {
@@ -37,10 +37,5 @@ const getFormattedWeekInfo = (date) => {
     }
 }
 
-module.exports = {
-    getReportWeekInfo,
-    getMonthsInfo,
-    getFormattedWeekInfo,
-};
 
 
