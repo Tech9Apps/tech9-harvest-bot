@@ -25,7 +25,7 @@ export class DeployStack extends Stack {
       runtime: Runtime.NODEJS_16_X,
       memorySize: 1024,
       timeout: Duration.minutes(15),
-      entry: path.join(__dirname, `/../src/index.js`),
+      entry: path.join(__dirname, `../../src/index.js`),
       handler: 'handler',
       environment: {
         STAGE: STAGE!,
