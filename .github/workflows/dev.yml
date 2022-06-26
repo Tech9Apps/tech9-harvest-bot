@@ -1,0 +1,40 @@
+name: Dev
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  STAGE: dev
+  AWS_REGION: us-west-2
+  CDK_DEFAULT_REGION: us-west-2
+  CDK_DEFAULT_ACCOUNT: 644480493008
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  HARVEST_ACCOUNT_ID: ${{ secrets.HARVEST_ACCOUNT_ID }}
+  HARVEST_PERSONAL_TOKEN: ${{ secrets.HARVEST_PERSONAL_TOKEN }}
+  PILOT_USERS: ${{ secrets.PILOT_USERS }}
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  NODE_VERSION: '16'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+
+      - name: Backend lambda Deployment
+        run: |
+          cd deploy
+          npx aws-cdk synth
+          npx aws-cdk deploy --all --require-approval never
