@@ -42,7 +42,7 @@ export class DeployStack extends Stack {
     })
 
     const eventRule = new Rule(this, 'scheduleRule', {
-      schedule: Schedule.cron({ day: '1' }),
+      schedule: Schedule.expression("cron(30 8 * * ? *)"),
     });
 
     eventRule.addTarget(new LambdaFunction(botHandler))
