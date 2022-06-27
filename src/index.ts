@@ -33,7 +33,7 @@ exports.handler = async () => {
 
     const slackNotificationPromises = [];
 
-    const message = `You have not logged 40 Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest`
+    const message = `You have not logged 40 Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
 
     for (const user of filterUsers) {
         const entry = entries.find((e:any) => e.user_id === user.id);
