@@ -12,7 +12,7 @@ const {
 } = process.env;
 
 // pilot users
-const emails = PILOT_USERS!.split(",");
+const emails = PILOT_USERS?.split(",");
 
 exports.handler = async () => {
     // get the list of all slack users
