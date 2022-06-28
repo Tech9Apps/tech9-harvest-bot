@@ -5,7 +5,6 @@ import {format} from "date-fns";
 import {getFormattedWeekInfo} from "./date";
 import HarvestApi from "./harvest";
 
-
 const {
     SLACK_BOT_TOKEN,
     PILOT_USERS
@@ -25,7 +24,7 @@ exports.handler = async () => {
     const users = await harvestApi.getAllActiveUsers();
 
     // get whitelist users
-    const filterUsers = (emails || []).length > 0 ? users.filter((u:any) => emails.includes(u.email)) : users;
+    const filterUsers = (emails || []).length > 0 ? users.filter((u:any) => emails?.includes(u.email)) : users;
 
     // get time entries
     const {startOfWeek, endOfWeek, start, end} = getFormattedWeekInfo(new Date());
@@ -39,7 +38,7 @@ exports.handler = async () => {
         const entry = entries.find((e:any) => e.user_id === user.id);
         if (!entry || entry.total_hours < 40) {
             // send Slack notification
-            const slackUser = slackUsers?.find((u:any) => u.profile.email === user.email);
+            const slackUser = slackUsers?.find((u:any) => u.profile.email.toLowerCase() === user.email.toLowerCase());
             if (slackUser) {
                 slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
             }
