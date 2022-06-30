@@ -38,7 +38,7 @@ exports.handler = async () => {
         const entry = entries.find((e:any) => e.user_id === user.id);
         if (!entry || entry.total_hours < 40) {
             // send Slack notification
-            const slackUser = slackUsers?.find((u:any) => u.profile.email.toLowerCase() === user.email.toLowerCase());
+            const slackUser = slackUsers?.find((u:any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase());
             if (slackUser) {
                 slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
             }
