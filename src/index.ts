@@ -40,6 +40,7 @@ exports.handler = async () => {
             // send Slack notification
             const slackUser = slackUsers?.find((u:any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase());
             if (slackUser) {
+                console.log(slackUser?.profile?.display_name);
                 slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
             }
         }
