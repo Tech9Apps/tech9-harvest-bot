@@ -5,7 +5,8 @@ import {getFormattedMonthInfo} from "./date";
 import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import getUsers from "./users";
-import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME} from "./constants";
+import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
+import {getMessageFormat} from "./message";
 
 const {
   SLACK_BOT_TOKEN,
@@ -25,12 +26,11 @@ const handler = async () => {
 
   const totalHours = numberOfWorkingDays * DAY_WORKING_HOUR;
 
-  const message = `You have not logged ${totalHours} Hrs for the month: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
-
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
     if (!entry || entry.total_hours < totalHours) {
+      const message = getMessageFormat(start, end, totalHours, entry.total_hours)
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);

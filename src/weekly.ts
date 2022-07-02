@@ -1,16 +1,16 @@
 import 'source-map-support/register';
 import 'reflect-metadata';
-import {format} from "date-fns";
 import {getFormattedWeekInfo} from "./date";
 import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
-import {chunk} from 'chunk-arr';
 import getUsers from "./users";
-import {CHUNK_SIZE, SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
+import {SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
+import {getMessageFormat} from "./message";
 
 const {
   SLACK_BOT_TOKEN,
 } = process.env;
+
 
 const handler = async () => {
   const web = new WebClient(SLACK_BOT_TOKEN);
@@ -28,7 +28,7 @@ const handler = async () => {
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
     if (!entry || entry.total_hours < WEEKLY_HOURS) {
-      const message = `You have not logged ${WEEKLY_HOURS} Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*.\nTotal Hours Logged: *${entry.total_hours} Hrs*\nRemaining Hours: *${WEEKLY_HOURS-entry.total_hours} Hrs* \nPlease update the <http://https://tech91.harvestapp.com/time|Harvest> ASAP! :tech9love: \n<http://https://tech91.harvestapp.com/time|Click here to open Harvest>`
+      const message = getMessageFormat(start, end, WEEKLY_HOURS, entry.total_hours)
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);
