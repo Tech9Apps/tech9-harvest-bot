@@ -1,12 +1,11 @@
 import 'source-map-support/register';
 import 'reflect-metadata';
 import {format} from "date-fns";
-import {getFormattedWeekInfo} from "./date";
+import {getFormattedMonthInfo} from "./date";
 import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
-import {chunk} from 'chunk-arr';
 import getUsers from "./users";
-import {CHUNK_SIZE, SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
+import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME} from "./constants";
 
 const {
   SLACK_BOT_TOKEN,
@@ -19,17 +18,19 @@ const handler = async () => {
   const {slackUsers, filterUsers} = await getUsers({slackClient: web, harvestApi});
 
   // get time entries
-  const {startOfWeek, endOfWeek, start, end} = getFormattedWeekInfo(new Date());
-  const entries = await harvestApi.getTimeEntries(startOfWeek, endOfWeek);
+  const {startOfMonth, endOfMonth, start, end, numberOfWorkingDays} = getFormattedMonthInfo(new Date());
+  const entries = await harvestApi.getTimeEntries(startOfMonth, endOfMonth);
 
   const slackNotificationPromises = [];
 
-  const message = `You have not logged 40 Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
+  const totalHours = numberOfWorkingDays * DAY_WORKING_HOUR;
+
+  const message = `You have not logged ${totalHours} Hrs for the month: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
 
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
-    if (!entry || entry.total_hours < WEEKLY_HOURS) {
+    if (!entry || entry.total_hours < totalHours) {
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);
@@ -50,7 +51,7 @@ const handler = async () => {
   }
 }
 
-exports.weekly = handler;
+exports.monthly = handler;
 
 
 

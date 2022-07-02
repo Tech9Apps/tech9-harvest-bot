@@ -20,9 +20,9 @@ export class DeployStack extends Stack {
     super(scope, id, props);
 
     // lambda
-    const name = `${STAGE}-tech9-harvest-bot-weekly`;
-    const botHandler = new NodejsFunction(this, name, {
-      functionName: name,
+    const weeklyBotName = `${STAGE}-tech9-harvest-bot-weekly`;
+    const weeklyBotHandler = new NodejsFunction(this, weeklyBotName, {
+      functionName: weeklyBotName,
       runtime: Runtime.NODEJS_14_X,
       bundling: {
         nodeModules: ['axios', '@slack/web-api', 'date-fns', 'reflect-metadata', 'harvest-v2'],
@@ -31,7 +31,7 @@ export class DeployStack extends Stack {
       timeout: Duration.minutes(15),
       entry: path.join(__dirname, `../src/weekly.ts`),
       depsLockFilePath: join(__dirname, "..", 'yarn.lock'),
-      handler: 'handler',
+      handler: 'weekly',
       environment: {
         STAGE: STAGE!,
         HARVEST_ACCOUNT_ID: HARVEST_ACCOUNT_ID!,
@@ -41,10 +41,38 @@ export class DeployStack extends Stack {
       }
     })
 
-    const eventRule = new Rule(this, 'scheduleRule', {
+    const dailyEventRule = new Rule(this, `${STAGE}-scheduleRule-weekly`, {
       schedule: Schedule.expression("cron(0 4 * * ? *)"),
     });
 
-    eventRule.addTarget(new LambdaFunction(botHandler))
+    dailyEventRule.addTarget(new LambdaFunction(weeklyBotHandler))
+
+    // lambda
+    const monthlyName = `${STAGE}-tech9-harvest-bot-monthly`;
+    const monthlyBotHandler = new NodejsFunction(this, monthlyName, {
+      functionName: monthlyName,
+      runtime: Runtime.NODEJS_14_X,
+      bundling: {
+        nodeModules: ['axios', '@slack/web-api', 'date-fns', 'reflect-metadata', 'harvest-v2'],
+      },
+      memorySize: 512,
+      timeout: Duration.minutes(15),
+      entry: path.join(__dirname, `../src/monthly.ts`),
+      depsLockFilePath: join(__dirname, "..", 'yarn.lock'),
+      handler: 'monthly',
+      environment: {
+        STAGE: STAGE!,
+        HARVEST_ACCOUNT_ID: HARVEST_ACCOUNT_ID!,
+        HARVEST_PERSONAL_TOKEN: HARVEST_PERSONAL_TOKEN!,
+        PILOT_USERS: PILOT_USERS!,
+        SLACK_BOT_TOKEN: SLACK_BOT_TOKEN!,
+      }
+    })
+
+    const monthlyEventRule = new Rule(this, `${STAGE}-scheduleRule-monthly`, {
+      schedule: Schedule.expression("cron(0 14 L * ? *)"),
+    });
+
+    monthlyEventRule.addTarget(new LambdaFunction(monthlyBotHandler))
   }
 }
