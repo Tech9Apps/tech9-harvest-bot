@@ -26,24 +26,27 @@ exports.handler = async () => {
 
   const message = `You have not logged 40 Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
 
+  let counter = 0;
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
     if (!entry || entry.total_hours < 40) {
       // send Slack notification
       const slackUser = slackUsers?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase());
       if (slackUser) {
-        console.log(slackUser?.profile?.display_name);
-        slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
+        console.log(counter, slackUser?.profile?.display_name);
+        await web.chat.postMessage({channel: slackUser.id!, text: message});
+        counter++;
+        // slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
       }
     }
   }
 
   // send the notifications
-  if (slackNotificationPromises.length) {
-    const promisesChunk = chunk(slackNotificationPromises, CHUNK_SIZE);
-    for (const promisesChunkElement of promisesChunk) {
-      await Promise.all(slackNotificationPromises);
-    }
-  }
+  // if (slackNotificationPromises.length) {
+  //   const promisesChunk = chunk(slackNotificationPromises, CHUNK_SIZE);
+  //   for (const promisesChunkElement of promisesChunk) {
+  //     await Promise.all(slackNotificationPromises);
+  //   }
+  // }
 }
 
