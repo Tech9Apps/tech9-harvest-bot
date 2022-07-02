@@ -6,7 +6,7 @@ import HarvestApi from "./harvest";
 import {WebClient} from "@slack/web-api";
 import {chunk} from 'chunk-arr';
 import getUsers from "./users";
-import {CHUNK_SIZE} from "./constants";
+import {CHUNK_SIZE, SLACKBOT_DISPLAY_NAME} from "./constants";
 
 const {
   SLACK_BOT_TOKEN,
@@ -31,7 +31,8 @@ exports.handler = async () => {
     const entry = entries.find((e: any) => e.user_id === user.id);
     if (!entry || entry.total_hours < 40) {
       // send Slack notification
-      const slackUser = slackUsers?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase());
+      const slackUser = slackUsers
+        ?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase() && u?.profile?.display_name !== SLACKBOT_DISPLAY_NAME);
       if (slackUser) {
         console.log(counter, slackUser?.profile?.display_name);
         await web.chat.postMessage({channel: slackUser.id!, text: message});
