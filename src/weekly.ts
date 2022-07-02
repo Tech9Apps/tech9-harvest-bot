@@ -2,7 +2,7 @@ import 'source-map-support/register';
 import 'reflect-metadata';
 import {format} from "date-fns";
 import {getFormattedWeekInfo} from "./date";
-import HarvestApi from "./harvest";
+import { HarvestApi } from "./harvest";
 import {WebClient} from "@slack/web-api";
 import {chunk} from 'chunk-arr';
 import getUsers from "./users";
@@ -32,9 +32,9 @@ const handler = async () => {
     if (!entry || entry.total_hours < 40) {
       // send Slack notification
       const slackUser = slackUsers
-        ?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase() && u?.profile?.display_name !== SLACKBOT_DISPLAY_NAME);
+        ?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase() && u?.profile?.display_name !== SLACKBOT_DISPLAY_NAME && !u?.profile.bot_id);
       if (slackUser) {
-        console.log(counter, slackUser?.profile);
+        console.log(counter, slackUser?.profile?.email, slackUser);
         await web.chat.postMessage({channel: slackUser.id!, text: message});
         counter++;
         // slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
@@ -50,6 +50,8 @@ const handler = async () => {
   //   }
   // }
 }
+
+handler();
 
 exports.handler = handler;
 

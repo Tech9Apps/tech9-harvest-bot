@@ -1,13 +1,14 @@
 import axios, {AxiosInstance} from "axios";
 // @ts-ignore
 import Harvest from "harvest-v2";
+import exp = require("constants");
 
 const {
     HARVEST_ACCOUNT_ID,
     HARVEST_PERSONAL_TOKEN,
 } = process.env;
 
-export default class HarvestApi {
+export class HarvestApi {
     private _harvest: any;
     private _axiosInstance: AxiosInstance;
 

@@ -1,5 +1,5 @@
 import {WebClient} from "@slack/web-api";
-import HarvestApi from "./harvest";
+import { HarvestApi } from "./harvest";
 
 const {
   PILOT_USERS
