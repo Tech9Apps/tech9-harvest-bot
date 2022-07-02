@@ -36,8 +36,9 @@ export class HarvestApi {
         let page = 1;
         do {
             const res = await this._harvest.users.listBy({page, is_active: true });
-            if ((res.users || []).length) {
-                users = [...users, ...res.users]
+            const harvestUsers = res?.users?.filter((u: any) => !!u.email)
+            if ((harvestUsers || []).length) {
+                users = [...users, ...harvestUsers]
             } else {
                 break;
             }

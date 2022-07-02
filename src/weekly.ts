@@ -2,11 +2,11 @@ import 'source-map-support/register';
 import 'reflect-metadata';
 import {format} from "date-fns";
 import {getFormattedWeekInfo} from "./date";
-import { HarvestApi } from "./harvest";
+import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import {chunk} from 'chunk-arr';
 import getUsers from "./users";
-import {CHUNK_SIZE, SLACKBOT_DISPLAY_NAME} from "./constants";
+import {CHUNK_SIZE, SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
 
 const {
   SLACK_BOT_TOKEN,
@@ -26,32 +26,29 @@ const handler = async () => {
 
   const message = `You have not logged 40 Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
 
-  let counter = 0;
+  const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
-    if (!entry || entry.total_hours < 40) {
+    if (!entry || entry.total_hours < WEEKLY_HOURS) {
       // send Slack notification
       const slackUser = slackUsers
-        ?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase() && u?.profile?.display_name !== SLACKBOT_DISPLAY_NAME && !u?.profile.bot_id);
+        ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);
       if (slackUser) {
-        console.log(counter, slackUser?.profile?.email, slackUser);
-        await web.chat.postMessage({channel: slackUser.id!, text: message});
-        counter++;
-        // slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
+        let channelId = slackUser.id!;
+        if (!channels.includes(channelId)) {
+          console.log(slackUser?.profile?.first_name, slackUser?.profile?.email)
+          slackNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
+          channels.push(channelId)
+        }
       }
     }
   }
 
   // send the notifications
-  // if (slackNotificationPromises.length) {
-  //   const promisesChunk = chunk(slackNotificationPromises, CHUNK_SIZE);
-  //   for (const promisesChunkElement of promisesChunk) {
-  //     await Promise.all(slackNotificationPromises);
-  //   }
-  // }
+  if (slackNotificationPromises.length) {
+    await Promise.all(slackNotificationPromises);
+  }
 }
-
-handler();
 
 exports.handler = handler;
 

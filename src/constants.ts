@@ -1,2 +1,3 @@
 export const CHUNK_SIZE = 5;
-export const SLACKBOT_DISPLAY_NAME = "Slackbot";
+export const SLACKBOT_DISPLAY_NAME = "slackbot";
+export const WEEKLY_HOURS = 40;

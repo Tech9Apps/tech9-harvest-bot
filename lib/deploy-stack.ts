@@ -23,7 +23,7 @@ export class DeployStack extends Stack {
     const name = `${STAGE}-tech9-harvest-bot-weekly`;
     const botHandler = new NodejsFunction(this, name, {
       functionName: name,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_14_X,
       bundling: {
         nodeModules: ['axios', '@slack/web-api', 'date-fns', 'reflect-metadata', 'harvest-v2'],
       },
