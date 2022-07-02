@@ -24,12 +24,11 @@ const handler = async () => {
 
   const slackNotificationPromises = [];
 
-  const message = `You have not logged 40 Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*. \nPlease update the Harvest ASAP!`
-
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
     if (!entry || entry.total_hours < WEEKLY_HOURS) {
+      const message = `You have not logged ${WEEKLY_HOURS} Hrs for the week: *${format(start, "do MMM")} to ${format(end, "do MMM")}*.\nTotal Hours Logged: *${entry.total_hours} Hrs*\nRemaining Hours: *${WEEKLY_HOURS-entry.total_hours} Hrs* \nPlease update the <http://https://tech91.harvestapp.com/time|Harvest> ASAP! :tech9love: \n<http://https://tech91.harvestapp.com/time|Click here to open Harvest>`
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);
