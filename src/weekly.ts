@@ -4,7 +4,9 @@ import {format} from "date-fns";
 import {getFormattedWeekInfo} from "./date";
 import HarvestApi from "./harvest";
 import {WebClient} from "@slack/web-api";
+import {chunk} from 'chunk-arr';
 import getUsers from "./users";
+import {CHUNK_SIZE} from "./constants";
 
 const {
   SLACK_BOT_TOKEN,
@@ -14,7 +16,7 @@ exports.weekly = async () => {
   const web = new WebClient(SLACK_BOT_TOKEN);
   const harvestApi = new HarvestApi();
 
-  const {slackUsers, filterUsers} = await getUsers({ slackClient: web, harvestApi });
+  const {slackUsers, filterUsers} = await getUsers({slackClient: web, harvestApi});
 
   // get time entries
   const {startOfWeek, endOfWeek, start, end} = getFormattedWeekInfo(new Date());
@@ -38,7 +40,10 @@ exports.weekly = async () => {
 
   // send the notifications
   if (slackNotificationPromises.length) {
-    await Promise.all(slackNotificationPromises);
+    const promisesChunk = chunk(slackNotificationPromises, CHUNK_SIZE);
+    for (const promisesChunkElement of promisesChunk) {
+      await Promise.all(slackNotificationPromises);
+    }
   }
 }
 
