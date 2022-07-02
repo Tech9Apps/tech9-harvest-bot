@@ -12,7 +12,7 @@ const {
   SLACK_BOT_TOKEN,
 } = process.env;
 
-exports.handler = async () => {
+const handler = async () => {
   const web = new WebClient(SLACK_BOT_TOKEN);
   const harvestApi = new HarvestApi();
 
@@ -34,7 +34,7 @@ exports.handler = async () => {
       const slackUser = slackUsers
         ?.find((u: any) => u.profile?.email?.toLowerCase() === user?.emai?.toLowerCase() && u?.profile?.display_name !== SLACKBOT_DISPLAY_NAME);
       if (slackUser) {
-        console.log(counter, slackUser?.profile?.display_name);
+        console.log(counter, slackUser?.profile);
         await web.chat.postMessage({channel: slackUser.id!, text: message});
         counter++;
         // slackNotificationPromises.push(web.chat.postMessage({channel: slackUser.id!, text: message}));
@@ -50,4 +50,8 @@ exports.handler = async () => {
   //   }
   // }
 }
+
+exports.handler = handler;
+
+
 
