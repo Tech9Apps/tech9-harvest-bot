@@ -27,7 +27,7 @@ export class DeployStack extends Stack {
       bundling: {
         nodeModules: ['axios', '@slack/web-api', 'date-fns', 'reflect-metadata', 'harvest-v2'],
       },
-      memorySize: 1024,
+      memorySize: 512,
       timeout: Duration.minutes(15),
       entry: path.join(__dirname, `../src/weekly.ts`),
       depsLockFilePath: join(__dirname, "..", 'yarn.lock'),
