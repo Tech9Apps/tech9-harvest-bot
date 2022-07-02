@@ -12,7 +12,7 @@ const {
   SLACK_BOT_TOKEN,
 } = process.env;
 
-exports.weekly = async () => {
+exports.handler = async () => {
   const web = new WebClient(SLACK_BOT_TOKEN);
   const harvestApi = new HarvestApi();
 

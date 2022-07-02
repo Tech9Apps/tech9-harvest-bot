@@ -29,7 +29,7 @@ export class DeployStack extends Stack {
       },
       memorySize: 1024,
       timeout: Duration.minutes(15),
-      entry: path.join(__dirname, `../src/index.ts`),
+      entry: path.join(__dirname, `../src/weekly.ts`),
       depsLockFilePath: join(__dirname, "..", 'yarn.lock'),
       handler: 'handler',
       environment: {
