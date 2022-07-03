@@ -1,3 +1,15 @@
+ifeq ($(OS),Windows_NT)
+	ENV := ${CURDIR}\.env
+	CWD := ${CURDIR}
+else
+	ENV := $(PWD)/.env
+	CWD := $(PWD)
+endif
+
+include $(ENV)
+
+export
+
 run-local-daily:
 	rm -rf ./cdk.out
 	cdk synth

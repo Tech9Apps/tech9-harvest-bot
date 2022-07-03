@@ -27,8 +27,9 @@ const handler = async () => {
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
-    if (!entry || entry.total_hours < WEEKLY_HOURS) {
-      const message = getMessageFormat(start, end, WEEKLY_HOURS, entry.total_hours)
+    const totalHoursSpent = entry?.total_hours!;
+    if (!entry || totalHoursSpent < WEEKLY_HOURS) {
+      const message = getMessageFormat(start, end, WEEKLY_HOURS, totalHoursSpent)
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);
@@ -45,7 +46,7 @@ const handler = async () => {
 
   // send the notifications
   if (slackNotificationPromises.length) {
-    await Promise.all(slackNotificationPromises);
+     await Promise.all(slackNotificationPromises);
   }
 }
 
