@@ -5,11 +5,11 @@ import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import getUsers from "./users";
 import {SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
-import {getMessageFormat, getPendingUsersDetailsMessage} from "./message";
+import {getMessageFormat} from "./message";
+import {updateManagers} from "./common";
 
 const {
   SLACK_BOT_TOKEN,
-  MANAGERS,
 } = process.env;
 
 
@@ -49,24 +49,10 @@ const handler = async () => {
 
   // send the notifications
   if (slackNotificationPromises.length) {
-     await Promise.all(slackNotificationPromises);
+     // await Promise.all(slackNotificationPromises);
   }
 
-  if (MANAGERS) {
-    const managers = MANAGERS?.split(",");
-    const message = getPendingUsersDetailsMessage(pendingUsers)
-    const managerNotificationPromises = [];
-    const slackUser = slackUsers
-      ?.find((u: any) => managers?.includes(u.profile.email.toLowerCase()) && u.name !== SLACKBOT_DISPLAY_NAME);
-    if (slackUser) {
-      let channelId = slackUser.id!;
-      managerNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
-    }
-
-    if (managerNotificationPromises.length) {
-      await Promise.all(managerNotificationPromises);
-    }
-  }
+  await updateManagers(pendingUsers, slackUsers, web);
 }
 
 exports.weekly = handler;

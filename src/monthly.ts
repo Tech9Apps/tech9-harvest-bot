@@ -1,12 +1,12 @@
 import 'source-map-support/register';
 import 'reflect-metadata';
-import {format} from "date-fns";
 import {getFormattedMonthInfo} from "./date";
 import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import getUsers from "./users";
 import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
 import {getMessageFormat} from "./message";
+import {updateManagers} from "./common";
 
 const {
   SLACK_BOT_TOKEN,
@@ -25,6 +25,7 @@ const handler = async () => {
   const slackNotificationPromises = [];
 
   const totalHours = numberOfWorkingDays * DAY_WORKING_HOUR;
+  const pendingUsers: Array<string> = [];
 
   const channels: Array<string> = [];
   for (const user of filterUsers) {
@@ -38,7 +39,7 @@ const handler = async () => {
       if (slackUser) {
         let channelId = slackUser.id!;
         if (!channels.includes(channelId)) {
-          console.log(slackUser?.profile?.first_name, slackUser?.profile?.email)
+          pendingUsers.push(slackUser?.real_name!);
           slackNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
           channels.push(channelId)
         }
@@ -50,6 +51,9 @@ const handler = async () => {
   if (slackNotificationPromises.length) {
     await Promise.all(slackNotificationPromises);
   }
+
+  await updateManagers(pendingUsers, slackUsers, web);
+
 }
 
 exports.monthly = handler;

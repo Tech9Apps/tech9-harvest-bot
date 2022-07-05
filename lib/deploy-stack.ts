@@ -13,7 +13,8 @@ const {
   HARVEST_PERSONAL_TOKEN,
   PILOT_USERS,
   SLACK_BOT_TOKEN,
-  MANAGERS
+  MANAGERS,
+  IGNORE_USERS
 } = process.env;
 
 export class DeployStack extends Stack {
@@ -40,6 +41,7 @@ export class DeployStack extends Stack {
         PILOT_USERS: PILOT_USERS!,
         SLACK_BOT_TOKEN: SLACK_BOT_TOKEN!,
         MANAGERS: MANAGERS!,
+        IGNORE_USERS: IGNORE_USERS!
       }
     })
 

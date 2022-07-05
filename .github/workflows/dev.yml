@@ -16,6 +16,7 @@ env:
   HARVEST_PERSONAL_TOKEN: ${{ secrets.HARVEST_PERSONAL_TOKEN }}
   PILOT_USERS: ${{ secrets.PILOT_USERS }}
   MANAGERS: ${{ secrets.PILOT_USERS }}
+  IGNORE_USERS: ${{ secrets.IGNORE_USERS }}
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   NODE_VERSION: '16'
 
