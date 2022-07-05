@@ -7,3 +7,10 @@ export const getMessageFormat =
     + `\nRemaining Hours:      *${expectedHour - totalHoursSpent} Hrs* `
     + `\nPlease update the <https://tech91.harvestapp.com/time|Harvest> ASAP! :tech9love: `
     + `\n<https://tech91.harvestapp.com/time|Click here to open Harvest>`;
+
+
+export const getPendingUsersDetailsMessage =
+  (pendingUsers: Array<string>) =>
+    `Following users need to update the Harvest for the last week (Total Count - *${pendingUsers?.length!}*)\n`
+    + pendingUsers.join("\n");
+``

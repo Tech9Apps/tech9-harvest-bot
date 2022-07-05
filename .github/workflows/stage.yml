@@ -15,6 +15,7 @@ env:
   HARVEST_ACCOUNT_ID: ${{ secrets.HARVEST_ACCOUNT_ID }}
   HARVEST_PERSONAL_TOKEN: ${{ secrets.HARVEST_PERSONAL_TOKEN }}
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  MANAGERS: ${{ secrets.PILOT_USERS }}
   NODE_VERSION: '16'
 
 jobs:
@@ -30,7 +31,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
-
 
       - name: Backend lambda Deployment
         run: |

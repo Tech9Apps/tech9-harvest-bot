@@ -5,10 +5,11 @@ import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import getUsers from "./users";
 import {SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
-import {getMessageFormat} from "./message";
+import {getMessageFormat, getPendingUsersDetailsMessage} from "./message";
 
 const {
   SLACK_BOT_TOKEN,
+  MANAGERS,
 } = process.env;
 
 
@@ -24,6 +25,8 @@ const handler = async () => {
 
   const slackNotificationPromises = [];
 
+  const pendingUsers: Array<string> = [];
+
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
@@ -36,7 +39,7 @@ const handler = async () => {
       if (slackUser) {
         let channelId = slackUser.id!;
         if (!channels.includes(channelId)) {
-          console.log(slackUser?.profile?.first_name, slackUser?.profile?.email)
+          pendingUsers.push(slackUser?.real_name!);
           slackNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
           channels.push(channelId)
         }
@@ -47,6 +50,22 @@ const handler = async () => {
   // send the notifications
   if (slackNotificationPromises.length) {
      await Promise.all(slackNotificationPromises);
+  }
+
+  if (MANAGERS) {
+    const managers = MANAGERS?.split(",");
+    const message = getPendingUsersDetailsMessage(pendingUsers)
+    const managerNotificationPromises = [];
+    const slackUser = slackUsers
+      ?.find((u: any) => managers?.includes(u.profile.email.toLowerCase()) && u.name !== SLACKBOT_DISPLAY_NAME);
+    if (slackUser) {
+      let channelId = slackUser.id!;
+      managerNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
+    }
+
+    if (managerNotificationPromises.length) {
+      await Promise.all(managerNotificationPromises);
+    }
   }
 }
 
