@@ -39,7 +39,7 @@ const handler = async () => {
       if (slackUser) {
         let channelId = slackUser.id!;
         if (!channels.includes(channelId)) {
-          console.log(slackUser?.real_name!)
+          console.log(slackUser?.real_name!);
           pendingUsers.push(slackUser?.real_name!);
           slackNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
           channels.push(channelId)
@@ -50,7 +50,8 @@ const handler = async () => {
 
   // send the notifications
   if (slackNotificationPromises.length) {
-     await Promise.all(slackNotificationPromises);
+    console.log("Sending Messages to the users");
+    await Promise.all(slackNotificationPromises);
   }
 
   await updateManagers(pendingUsers, slackUsers, web);

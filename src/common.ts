@@ -19,6 +19,7 @@ export const updateManagers = async (pendingUsers: Array<string>, slackUsers: an
     }
 
     if (managerNotificationPromises.length) {
+      console.log("Sending Messages to the managers");
       await Promise.all(managerNotificationPromises);
     }
   }
