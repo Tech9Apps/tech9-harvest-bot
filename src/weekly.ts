@@ -39,6 +39,7 @@ const handler = async () => {
       if (slackUser) {
         let channelId = slackUser.id!;
         if (!channels.includes(channelId)) {
+          console.log(slackUser?.real_name!)
           pendingUsers.push(slackUser?.real_name!);
           slackNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
           channels.push(channelId)
