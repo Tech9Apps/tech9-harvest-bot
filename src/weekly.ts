@@ -49,7 +49,7 @@ const handler = async () => {
 
   // send the notifications
   if (slackNotificationPromises.length) {
-     // await Promise.all(slackNotificationPromises);
+     await Promise.all(slackNotificationPromises);
   }
 
   await updateManagers(pendingUsers, slackUsers, web);
