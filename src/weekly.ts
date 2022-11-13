@@ -30,7 +30,7 @@ const handler = async () => {
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
-    const totalHoursSpent = entry?.total_hours!;
+    const totalHoursSpent = entry?.total_hours! || 0;
     if (!entry || totalHoursSpent < WEEKLY_HOURS) {
       const message = getMessageFormat(start, end, WEEKLY_HOURS, totalHoursSpent)
       // send Slack notification

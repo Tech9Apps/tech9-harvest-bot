@@ -10,13 +10,11 @@ export const updateManagers = async (pendingUsers: Array<string>, slackUsers: an
   if (MANAGERS) {
     const managers = MANAGERS?.split(",");
     const message = getPendingUsersDetailsMessage(pendingUsers)
-    const managerNotificationPromises = [];
-    const slackUser = slackUsers
-      ?.find((u: any) => managers?.includes(u.profile.email.toLowerCase()) && u.name !== SLACKBOT_DISPLAY_NAME);
-    if (slackUser) {
-      let channelId = slackUser.id!;
-      managerNotificationPromises.push(web.chat.postMessage({channel: channelId, text: message}));
-    }
+    const managerNotificationPromises = slackUsers
+      ?.filter((u: any) => managers?.includes(u.profile.email.toLowerCase()) && u.name !== SLACKBOT_DISPLAY_NAME)
+      ?.map((u: any) => {
+        return web.chat.postMessage({channel: u.id!, text: message});
+      });
 
     if (managerNotificationPromises.length) {
       console.log("Sending Messages to the managers");
