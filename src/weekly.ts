@@ -51,7 +51,7 @@ const handler = async () => {
   // send the notifications
   if (slackNotificationPromises.length) {
     console.log("Sending Messages to the users");
-    // await Promise.all(slackNotificationPromises);
+    await Promise.all(slackNotificationPromises);
   }
 
   await updateManagers(pendingUsers, slackUsers, web);
