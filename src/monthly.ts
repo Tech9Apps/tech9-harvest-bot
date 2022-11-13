@@ -4,7 +4,7 @@ import {getFormattedMonthInfo} from "./date";
 import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import getUsers from "./users";
-import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
+import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME} from "./constants";
 import {getMessageFormat} from "./message";
 import {updateManagers} from "./common";
 
@@ -30,7 +30,7 @@ const handler = async () => {
   const channels: Array<string> = [];
   for (const user of filterUsers) {
     const entry = entries.find((e: any) => e.user_id === user.id);
-    const totalHoursSpent = entry?.total_hours!;
+    const totalHoursSpent = entry?.total_hours! || 0;
     if (!entry || totalHoursSpent < totalHours) {
       const message = getMessageFormat(start, end, totalHours, totalHoursSpent)
       // send Slack notification
