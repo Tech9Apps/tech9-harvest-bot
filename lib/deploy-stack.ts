@@ -70,6 +70,8 @@ export class DeployStack extends Stack {
         HARVEST_PERSONAL_TOKEN: HARVEST_PERSONAL_TOKEN!,
         PILOT_USERS: PILOT_USERS!,
         SLACK_BOT_TOKEN: SLACK_BOT_TOKEN!,
+        MANAGERS: MANAGERS!,
+        IGNORE_USERS: IGNORE_USERS!
       }
     })
 
