@@ -7,6 +7,7 @@ import getUsers from "./users";
 import {SLACKBOT_DISPLAY_NAME, WEEKLY_HOURS} from "./constants";
 import {getMessageFormat} from "./message";
 import {updateManagers} from "./common";
+import roundTo from "./round";
 
 const {
   SLACK_BOT_TOKEN,
@@ -32,7 +33,7 @@ const handler = async () => {
     const entry = entries.find((e: any) => e.user_id === user.id);
     const totalHoursSpent = entry?.total_hours! || 0;
     if (!entry || totalHoursSpent < WEEKLY_HOURS) {
-      const message = getMessageFormat(start, end, WEEKLY_HOURS, totalHoursSpent)
+      const message = getMessageFormat(start, end, WEEKLY_HOURS, roundTo(totalHoursSpent, 2))
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);

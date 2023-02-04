@@ -5,8 +5,9 @@ import {HarvestApi} from "./harvest";
 import {WebClient} from "@slack/web-api";
 import getUsers from "./users";
 import {DAY_WORKING_HOUR, SLACKBOT_DISPLAY_NAME} from "./constants";
-import {getMessageFormat} from "./message";
+import {getMonthlyMessageFormat} from "./message";
 import {updateManagers} from "./common";
+import roundTo from "./round";
 
 const {
   SLACK_BOT_TOKEN,
@@ -32,7 +33,7 @@ const handler = async () => {
     const entry = entries.find((e: any) => e.user_id === user.id);
     const totalHoursSpent = entry?.total_hours! || 0;
     if (!entry || totalHoursSpent < totalHours) {
-      const message = getMessageFormat(start, end, totalHours, totalHoursSpent)
+      const message = getMonthlyMessageFormat(start, end, roundTo(totalHours, 2), roundTo(totalHoursSpent, 2))
       // send Slack notification
       const slackUser = slackUsers
         ?.find((u: any) => u.profile.email.toLowerCase() === user.email.toLowerCase() && u.name !== SLACKBOT_DISPLAY_NAME);
